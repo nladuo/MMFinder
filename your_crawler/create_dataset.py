@@ -3,7 +3,7 @@
 import cv2
 
 image_path = "./assets/test_mm.jpg"
-casc_path = "./assets/cascade/haarcascade_frontalface_default.xml"
+casc_path = "./assets/haarcascade_frontalface_default.xml"
 
 # Create the haar cascade
 face_cascade = cv2.CascadeClassifier(casc_path)
