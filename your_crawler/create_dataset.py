@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+""" Extract the MM Face """
 import cv2
 
 image_path = "./assets/test_mm.jpg"
