@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding=utf8
-""" Crawl the MM images, and Serve for desktop Client."""
+""" Crawl the url of MM image in db."""
 import requests
 from bs4 import BeautifulSoup
 import pymongo
@@ -28,7 +28,9 @@ def parse_detail(url):
 
     for img in imgs:
         print img
-        insert_pic(img["src"], img["alt"])
+        try:
+            insert_pic(img["src"], img["alt"])
+        except: pass
 
 
 def parse_whole(url):
