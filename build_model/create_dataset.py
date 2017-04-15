@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-""" Have Fun the Trained MM Model """
+""" Extract the MM Face """
 
 if __name__ == "__main__":
     pass
+
