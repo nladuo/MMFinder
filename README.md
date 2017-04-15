@@ -1,5 +1,5 @@
 # MMFinder
-a demo for finding lovely girls you like uses facial recognition.
+train a girl classifier based on facial recognition.
 
 ## STATUS
 Building...
