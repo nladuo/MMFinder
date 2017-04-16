@@ -4,12 +4,14 @@
 import requests
 import pymongo
 import os
+from PIL import Image
 from bson.objectid import ObjectId
 import face_recognition
+from multiprocessing import Pool, Manager
 
 
 def get_collection():
-    client = pymongo.MongoClient("localhost", 27017)
+    client = pymongo.MongoClient("localhost", 27017, connect=False)
     db = client["mm_finder"]
     coll = db.pics
     coll.ensure_index('url', unique=True)
@@ -26,9 +28,16 @@ def update_pic(_id):
     except: pass
 
 
-def get_face_num(path):
-    image = face_recognition.load_image_file(path)
+def get_face_num(image_name):
+    image_path = './mm_images/%s' % image_name
+    image = face_recognition.load_image_file(image_path)
     locations = face_recognition.face_locations(image)
+    if len(locations) == 1:  # save the face of mm
+        top, right, bottom, left = locations[0]
+        face_image = image[top:bottom, left:right]
+        pil_image = Image.fromarray(face_image)
+        with open("./mm_images/face-%s" % image_name, "wb") as f:
+            pil_image.save(f)
     return len(locations)
 
 
@@ -52,20 +61,32 @@ def download_image(_id, url):
         f.close()
     print "saved:", image_name
 
-    if get_face_num(image_path) != 1:
+    if get_face_num(image_name) != 1:
         os.remove(image_path)
         print "removed:", image_name
 
+
+def handle_pic(pic, lock):
+    print pic["alt"], pic["url"]
+    try:
+        download_image(pic["_id"], pic["url"])
+    except:
+        pass
+    with lock:
+        update_pic(pic["_id"])
 
 if __name__ == "__main__":
     collection = get_collection()
     pics = collection.find({
         'has_downloaded': False
     })
+
+    pool = Pool(10)
+    lock = Manager().Lock()
+
     for pic in pics:
-        print pic["alt"], pic["url"]
-        try:
-            download_image(pic["_id"], pic["url"])
-        except:pass
-        update_pic(pic["_id"])
+        pool.apply_async(handle_pic, args=(pic, lock))
+
+    pool.close()
+    pool.join()
 
