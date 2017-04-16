@@ -1,15 +1,24 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
-import App from './App'
-import router from './router'
 
-Vue.config.productionTip = false
+const updateImageUrl = ()=> {
+  $('#loading').css('display','block');
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App }
+    $.ajax({
+      type : "GET",
+      url : "/api/get_face_url",
+      dataType: 'json',
+      async: true,
+      success(data) {
+        $('#loading').css('display', 'none');
+        $('#mm').attr("src", "/mm_images/" + data.path);
+        $('#mm_face').attr("src", "/mm_images/face-" + data.path);
+      },
+      error() {
+        alert("error");
+        $('#loading').css('display', 'none');
+      }
+    });
+}
+
+$(document).ready(()=>{
+  updateImageUrl();
 })
