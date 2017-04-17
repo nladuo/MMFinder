@@ -1,18 +1,40 @@
+var path;
 
 const updateImageUrl = ()=> {
   $('#loading').css('display','block');
 
-    $.ajax({
+  $.ajax({
+    type : "GET",
+    url : "/api/get_face_url",
+    dataType: 'json',
+    async: true,
+    success(data) {
+      $('#loading').css('display', 'none');
+      path = data.path
+      $('#mm').attr("src", "/mm_images/" + data.path);
+      $('#mm_face').attr("src", "/mm_images/face-" + data.path);
+      let picHeight=$("#mm").height();
+      $('.right-div').height(picHeight);
+    },
+    error() {
+      alert("error");
+      $('#loading').css('display', 'none');
+    }
+  });
+}
+
+const handleFace = (opt) => {
+  $('#loading').css('display','block');
+  $.ajax({
       type : "GET",
-      url : "/api/get_face_url",
+      url : "/api/handle_face",
       dataType: 'json',
+      data: {path: path, opt: opt},
       async: true,
       success(data) {
+        console.log(data);
         $('#loading').css('display', 'none');
-        $('#mm').attr("src", "/mm_images/" + data.path);
-        $('#mm_face').attr("src", "/mm_images/face-" + data.path);
-        let picHeight=$("#mm").height();
-        $('.right-div').height(picHeight);
+        updateImageUrl();
       },
       error() {
         alert("error");
@@ -21,6 +43,19 @@ const updateImageUrl = ()=> {
     });
 }
 
+
 $(document).ready(()=>{
   updateImageUrl();
+
+  $("#like_btn").click(()=>{
+    handleFace("like");
+  })
+
+  $("#dislike_btn").click(()=>{
+    handleFace("dislike");
+  })
+
+  $("#ignore_btn").click(()=>{
+    handleFace("ignore");
+  })
 })
