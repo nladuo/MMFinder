@@ -23,25 +23,7 @@ body {
 	border-radius: 4px;
 }
 
-table{
-  background-color: #fff;
-}
-
-td,th {
-  text-align: center;
+.right-bar {
+  display: table-cell;
   vertical-align: middle;
-}
-
-td {
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-}
-
-
-
-@media (min-width: 768px) {
-  .time-type {
-    width: 120px
-  }
 }

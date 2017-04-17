@@ -11,6 +11,8 @@ const updateImageUrl = ()=> {
         $('#loading').css('display', 'none');
         $('#mm').attr("src", "/mm_images/" + data.path);
         $('#mm_face').attr("src", "/mm_images/face-" + data.path);
+        let picHeight=$("#mm").height();
+        $('.right-div').height(picHeight);
       },
       error() {
         alert("error");
