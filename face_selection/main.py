@@ -54,8 +54,6 @@ def handle_face():
     face_path = "../crawler/mm_images/face-" + path
     image_path = "../crawler/mm_images/" + path
 
-    print os.path.exists(face_path), face_path
-
     if os.path.exists(face_path) and os.path.exists(image_path):
         if opt == "like":
             shutil.move(face_path, "./girls/likes/")
