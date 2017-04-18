@@ -31,12 +31,13 @@ def serve_mm_images(path):
 def get_face_url():
     first_image = ""
     for image_path in os.listdir("../crawler/mm_images"):
+        # print image_path
         if image_path != ".gitignore" and \
                 (not image_path.startswith("face-")):
             # ensure the face image exist
             if os.path.exists("../crawler/mm_images/face-%s" % image_path):
                 first_image = image_path
-            break
+                break
 
     if first_image == "":
         return json.dumps({"code": 1})
