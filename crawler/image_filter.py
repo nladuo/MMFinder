@@ -59,11 +59,11 @@ def download_image(_id, url):
                 f.write(chunk)
                 f.flush()
         f.close()
-    print "saved:", image_name
+    print("saved:", image_name)
 
     if get_face_num(image_name) != 1:
         os.remove(image_path)
-        print "removed:", image_name
+        print("removed:", image_name)
 
 
 def handle_pic(pic, lock):

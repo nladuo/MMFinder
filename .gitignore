@@ -1,2 +1,3 @@
 build-desktop-client-*/
+.vscode/
 .idea/

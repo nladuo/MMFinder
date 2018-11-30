@@ -49,7 +49,7 @@ def parse_whole(url):
         return albums
 
     while url is not None:
-        print "new_page-->", url
+        print("new_page-->", url)
         resp = requests.get(url)
         soup = BeautifulSoup(resp.content.decode("gbk"), "lxml")
         albums = get_albums(soup)
