@@ -2,11 +2,7 @@
 from flask import Flask, send_from_directory, request
 import json
 import os
-import sys
 import shutil
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 app = Flask(__name__, static_folder='www')
@@ -31,7 +27,6 @@ def serve_mm_images(path):
 def get_face_url():
     first_image = ""
     for image_path in os.listdir("../crawler/mm_images"):
-        # print image_path
         if image_path != ".gitignore" and \
                 (not image_path.startswith("face-")):
             # ensure the face image exist
@@ -66,9 +61,6 @@ def handle_face():
         return json.dumps({"code": 0})
     else:
         return json.dumps({"code": 1})
-
-
-
 
 
 if __name__ == '__main__':

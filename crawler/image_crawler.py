@@ -1,9 +1,18 @@
-#!/usr/bin/env python
-# coding=utf8
 """ Crawl the url of MM image in db."""
 import requests
 from bs4 import BeautifulSoup
 import pymongo
+
+
+def download_html(d_url):
+    while True:
+        try:
+            resp = requests.get(d_url, timeout=2)
+            return resp.content.decode("utf8")
+        except KeyboardInterrupt:
+            raise
+        except:
+            pass
 
 
 def get_collection():
@@ -21,54 +30,45 @@ def insert_pic(url, alt):
 
 
 def parse_detail(url):
-    print url
-    resp = requests.get(url)
-    soup = BeautifulSoup(resp.content.decode("gbk"), "lxml")
-    imgs = soup.find("div", {"class": "postContent"}).find_all("img")
-
-    for img in imgs:
-        print img
-        try:
-            insert_pic(img["src"], img["alt"])
-        except: pass
-
-
-def parse_whole(url):
-    def get_nextpage(soup):
-        lis = soup.find("div", {"id": "wp_page_numbers"}).find_all("li")
-        for li in lis:
-            if li.get_text() == u"下一页":
-                return "http://www.meizitu.com/a/" + li.a["href"]
-        return None
-
-    def get_albums(soup):
-        lis = soup.find_all("li", {"class": "wp-item"})
-        albums = []
-        for li in lis:
-            albums.append(li.a["href"])
-        return albums
-
-    while url is not None:
-        print("new_page-->", url)
-        resp = requests.get(url)
-        soup = BeautifulSoup(resp.content.decode("gbk"), "lxml")
-        albums = get_albums(soup)
-        for album in albums:
-            parse_detail(album)
-        url = get_nextpage(soup)
+    html = download_html(url)
+    soup = BeautifulSoup(html, "lxml")
+    a = soup.find("article", {"class": "clearfix"}).find("figure").find("a")
+    next_url = a.attrs["href"]
+    src = a.find("img").attrs["src"]
+    alt = a.find("img").attrs["alt"]
+    print(alt, src)
+    insert_pic(src, alt)
+    return next_url
 
 
-def get_tags():
-    resp = requests.get("http://www.meizitu.com/")
-    soup = BeautifulSoup(resp.content.decode("gbk"), "lxml")
-    items = soup.find("div", {"class": "tags"}).find_all("a")
+def parse_all_imgs(url):
+    init_url = url
+    count = 0
+    while True:
+        next_url = parse_detail(url)
+        if init_url not in next_url:
+            break
+        url = next_url
+        count += 1
+        if count >= 8:  # 防止审美疲劳,一组图最多8张
+            break
 
-    tags = []
+
+def parse_list(url):
+    html = download_html(url)
+    soup = BeautifulSoup(html, "lxml")
+    items = soup.find_all("article", {"class": "placeholder"})
+
     for item in items:
-        tags.append(item["href"])
-    return set(tags)
+        a = item.find("figure").find("a")
+        href = a.attrs["href"]
+        print(href)
+        parse_all_imgs(href)
 
 if __name__ == "__main__":
     collection = get_collection()
-    for tag in get_tags():
-        parse_whole(tag)
+
+    for i in range(1, 204):
+        print("crawling page {page}..".format(page=i))
+        url = "https://m.mzitu.com/page/{page}/".format(page=i)
+        parse_list(url)

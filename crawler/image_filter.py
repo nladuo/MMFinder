@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# coding=utf8
 """ Download the mm with one face images."""
 import requests
 import pymongo
@@ -45,12 +43,11 @@ def download_image(_id, url):
     ext = os.path.splitext(url)[1]
     image_name = str(_id) + ext
 
-    headers = {"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-               "Accept-Encoding": "gzip",
-               "Accept-Language": "zh-CN,zh;q=0.8",
-               "Referer": "http://www.meizitu.com/a/xinggan.html",
-               "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36"
-               }
+    headers = {
+        "Referer": "https://m.mzitu.com/",
+        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36"
+    }
     resp = requests.get(url, headers=headers)
     image_path = './mm_images/%s' % image_name
     with open(image_path, 'wb') as f:
@@ -67,7 +64,7 @@ def download_image(_id, url):
 
 
 def handle_pic(pic, lock):
-    print pic["alt"], pic["url"]
+    print(pic["alt"], pic["url"])
     try:
         download_image(pic["_id"], pic["url"])
     except:
