@@ -50,7 +50,7 @@ def parse_all_imgs(url):
             break
         url = next_url
         count += 1
-        if count >= 8:  # 防止审美疲劳,一组图最多8张
+        if count >= 3:  # 防止审美疲劳,一组图最多3张
             break
 
 
