@@ -32,8 +32,16 @@ Google Drive：https://drive.google.com/file/d/1CPSeum3HpopfomUEK1gybeuIVoeJT_Eo
 <br>
 百度云链接:https://pan.baidu.com/s/1Dk40tW2lx1ezTda9IyIO9g  密码:0vc7
 ### 2. 使用VGG提取特征并构建数据集
+```bash
+cd build_model
+python create_dataset.py
+```
 
 ### 3. 训练数据
+```bash
+cd build_model
+python trainer.py
+```
 
 
 ## Reference
