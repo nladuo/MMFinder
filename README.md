@@ -43,6 +43,9 @@ cd build_model
 python trainer.py
 ```
 
+## 测试效果
+目前不是很好，感觉不知道是不是因为女的都长得差不多。  
+![](result.png)
 
 ## Reference
 - https://sefiks.com/2018/08/06/deep-face-recognition-with-keras/

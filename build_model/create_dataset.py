@@ -71,21 +71,21 @@ vgg_face_descriptor = Model(inputs=model.layers[0].input, outputs=model.layers[-
 
 imgs = []
 labels = []
-for i, f_name in enumerate(os.listdir("../face_selection/girls/likes")):
+for f_name in os.listdir("../face_selection/girls/likes"):
     try:
         im_path = os.path.join("../face_selection/girls/likes", f_name)
         imgs.append(preprocess_image(im_path))
-        labels.append(0)
-        print(i, 0, f_name)
+        labels.append(1)
+        print(len(labels), 0, f_name)
     except:
         pass
 
-for i, f_name in enumerate(os.listdir("../face_selection/girls/dislikes")):
+for f_name in os.listdir("../face_selection/girls/dislikes"):
     try:
         im_path = os.path.join("../face_selection/girls/dislikes", f_name)
         imgs.append(preprocess_image(im_path))
-        labels.append(1)
-        print(i, 1, f_name)
+        labels.append(0)
+        print(len(labels), 1, f_name)
     except:
         pass
 
