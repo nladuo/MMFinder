@@ -1,8 +1,5 @@
 # MMFinder
-训练一个符合自己审美的美眉识别器。
-
-## Status
-Building...
+尝试训练一个符合自己审美的美眉识别器。
 
 ## 环境
 python3.6 + mongodb
