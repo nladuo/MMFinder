@@ -5,6 +5,7 @@ from keras.layers import ZeroPadding2D, Convolution2D, MaxPooling2D, Dropout, Fl
 from keras import Sequential, Model
 from keras.preprocessing import image
 from keras.applications.vgg19 import preprocess_input
+import pymongo
 
 
 def build_model():
@@ -69,36 +70,28 @@ model.load_weights('vgg_face_weights.h5')
 vgg_face_descriptor = Model(inputs=model.layers[0].input, outputs=model.layers[-2].output)
 
 
-imgs = []
-labels = []
-for f_name in os.listdir("../face_selection/girls/likes"):
-    try:
-        im_path = os.path.join("../face_selection/girls/likes", f_name)
-        imgs.append(preprocess_image(im_path))
-        labels.append(1)
-        print(len(labels), 0, f_name)
-    except:
-        pass
+client = pymongo.MongoClient()
+db = client.MMFinder
+images_coll = db.images
 
-for f_name in os.listdir("../face_selection/girls/dislikes"):
-    try:
-        im_path = os.path.join("../face_selection/girls/dislikes", f_name)
-        imgs.append(preprocess_image(im_path))
-        labels.append(0)
-        print(len(labels), 1, f_name)
-    except:
-        pass
+image_datas = []
+
+IMAGES_PATH = "../mm_images"
+
+for image_data in images_coll.find({}):
+    if "vec" not in image_data:
+        image_datas.append(image_data)
 
 
-features_batch = np.zeros((len(imgs), 2622))
-
-for i, img in enumerate(imgs):
+for i, image_data in enumerate(image_datas):
+    img_path = f"{IMAGES_PATH}/{image_data['path']}"
+    img = preprocess_image(img_path)
     features = vgg_face_descriptor.predict(img)
-    features_batch[i] = features
-    print(i)
+    print(i, img_path)
+    vec = features[0].tolist()
+    images_coll.update({"_id": image_data["_id"]}, {
+        "$set": {
+            "vec": vec
+        }
+    })
 
-with open("data.pickle", "wb") as f:
-    pickle.dump({
-        "features_batch": features_batch,
-        "labels": labels
-    }, f)
