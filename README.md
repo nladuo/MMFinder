@@ -1,29 +1,20 @@
 # MMFinder
-尝试训练一个符合自己审美的美眉识别器。
+一个美女图搜索引擎的demo。
 
 ## 环境
-python3.6 + mongodb
+python3.7 + mongodb + SPTAG
 
-## 数据构建步骤
-### 1. 爬取数据
+## 数据准备
+### 1. 准备数据
 爬取MM图片数据，并筛选出带脸的图片来。
-```bash
-cd crawler
-python image_crawler.py
-python image_filter.py
-```
+> 如果没有美女图片，可以去Google Drive下载，链接：https://drive.google.com/file/d/1shZ3gx9nHPHUgylsZIrvWliwCh9TucAo/view?usp=sharing。解压密码：nladuo。
 
-### 2. 人工标注
-通过以下命令，运行标注前端。
-```bash
-cd face_selection
-python main.py
-```
-运行后打开[http://localhost:3389](http://localhost:3389), 标注你喜欢的女孩.<br>
-![face_selection](./face_selection/screenshot.png)
+### 2. 过滤图片
+只选出带一个脸的美女图，然后放到mongo里面
 
 
-## 训练步骤
+## 特征工程
+通过VGG-net对人脸图片特征提取，转换成dense-vector。
 ### 1. 下载VGG预训练模型
 Google Drive：https://drive.google.com/file/d/1CPSeum3HpopfomUEK1gybeuIVoeJT_Eo/view?usp=sharing]
 <br>
@@ -34,15 +25,21 @@ cd build_model
 python create_dataset.py
 ```
 
-### 3. 训练数据
-```bash
-cd build_model
-python trainer.py
-```
 
-## 测试效果
-目前不是很好，感觉不知道是不是因为女的都长得差不多。  
-![](result.png)
+## 建立索引
+### 1. 安装SPTAG
+
+
+
+### 2. 对图片建立索引
+
+
+## 运行demo
+### 运行演示网站
+
+
+### 查看结果
+
 
 ## Reference
 - https://sefiks.com/2018/08/06/deep-face-recognition-with-keras/
