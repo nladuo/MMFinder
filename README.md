@@ -12,6 +12,7 @@ cd crawler
 python image_crawler.py
 python image_filter.py
 ```
+> 爬虫早已经失效，图片可以去Google Drive下载，链接：[https://drive.google.com/file/d/1shZ3gx9nHPHUgylsZIrvWliwCh9TucAo/view?usp=sharing](https://drive.google.com/file/d/1shZ3gx9nHPHUgylsZIrvWliwCh9TucAo/view?usp=sharing)。解压密码：nladuo。
 
 ### 2. 人工标注
 通过以下命令，运行标注前端。
