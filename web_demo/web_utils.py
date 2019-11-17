@@ -3,6 +3,7 @@ from keras.applications.vgg19 import preprocess_input
 import numpy as np
 import os
 import uuid
+from PIL import Image
 
 
 def get_file_extension(filename):
@@ -40,3 +41,35 @@ def save_upload_file(original_name, file):
 
     file.save(os.path.join(UPLOAD_DIR, encrypted_name))
     return encrypted_name
+
+
+def get_image_scale(image_name):
+    path = f"../mm_images/{image_name}"
+    size = Image.open(path).size
+    return size[1] / size[0]
+
+
+def re_arrange_images(image_names):
+    """
+        因为css是纵向排列的，但一般要横着看，所以这里把图片重新排序。
+        (本来应该在前端写的，不过我不会写css，就代码改了)
+    """
+    image_scales = [get_image_scale(name) for name in image_names]
+    columns = {}
+    scales = []
+    for i in range(5):
+        columns[i] = []
+        scales.append(0)
+
+    for i, name in enumerate(image_names):
+        which_col = scales.index(min(scales))
+        image_scale = image_scales[i]
+
+        columns[which_col].append(name)
+        scales[which_col] += image_scale
+
+    results = []
+    for i in range(5):
+        results += columns[i]
+
+    return results

@@ -1,7 +1,7 @@
 from flask import Flask, send_from_directory, request
 import json
-from web_utils import allowed_file, save_upload_file
-import random
+from web_utils import allowed_file, save_upload_file, re_arrange_images
+from web_service import get_face_and_save, get_face_representation, call_SPTAG_search, UPLOAD_DIR
 import os
 
 
@@ -23,6 +23,11 @@ def serve_images(path):
     return send_from_directory('../mm_images', path)
 
 
+@app.route('/api/get_upload_images/<path:path>')
+def serve_upload_images(path):
+    return send_from_directory('./dist/static/upload_images', path)
+
+
 @app.route('/api/upload_image', methods=["POST"])
 def api_upload_image():
     if request.method == 'POST':
@@ -36,6 +41,14 @@ def api_upload_image():
                 origin_file_name = file.filename
                 # 保存文件
                 filename = save_upload_file(origin_file_name, file)
+                face_count = get_face_and_save(filename)
+                if face_count == 0:
+                    os.remove(f"{UPLOAD_DIR}/{filename}")
+                    return json.dumps({'success': False, 'msg': '未检测出图片中的人脸'})
+                elif face_count > 1:
+                    os.remove(f"{UPLOAD_DIR}/{filename}")
+                    return json.dumps({'success': False, 'msg': '检测出图片不止一张人脸（必须保证上传图片只有一张人脸）'})
+
                 return json.dumps({'success': True, 'filename': filename, 'msg': '成功'})
             else:
                 return json.dumps({'success': False, 'msg': '文件类型错误，请上传png,jpg,jpeg格式的图片'})
@@ -43,18 +56,45 @@ def api_upload_image():
 
 @app.route('/api/search')
 def api_search_image():
-    image_names = []
-    for i, path in enumerate(os.listdir("../mm_images")):
-        if allowed_file(path):
-            image_names.append(path)
-        if i > 100:
-            break
-    random.shuffle(image_names)
+    filename = request.args.get("filename")
+    face_img_path = f"{UPLOAD_DIR}/face-{filename}"
+    if not os.path.exists(face_img_path):
+        return json.dumps({
+            "success": False,
+            "msg": "请求图片不存在，参数错误"
+        })
+
+    vec = get_face_representation(filename)
+    image_names = call_SPTAG_search(vec)
 
     return json.dumps({
         "success": True,
-        "data": image_names[:30]
+        "data": re_arrange_images(image_names)
     })
+
+
+# @app.route('/api/search')
+# def test_api_search_image():
+#     import random
+#     import pymongo
+#     client = pymongo.MongoClient()
+#     db = client.MMFinder
+#     images_coll = db.images
+#
+#     image_names = []
+#
+#     for i, image in enumerate(images_coll.find()):
+#         path = image["path"]
+#
+#         image_names.append(path)
+#         if i > 200:
+#             break
+#
+#     random.shuffle(image_names)
+#     return json.dumps({
+#         "success": True,
+#         "data": image_names[:30]
+#     })
 
 
 if __name__ == '__main__':

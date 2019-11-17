@@ -1,6 +1,8 @@
 import numpy as np
 from keras.layers import ZeroPadding2D, Convolution2D, MaxPooling2D, Dropout, Flatten, Activation
 from keras import Sequential, Model
+from keras.preprocessing import image
+from keras.applications.vgg19 import preprocess_input
 
 
 def get_feature_extractor():
@@ -59,3 +61,9 @@ def build_model():
     return model
 
 
+def preprocess_image(image_path):
+    img = image.load_img(image_path, target_size=(224, 224))
+    img = image.img_to_array(img)
+    img = np.expand_dims(img, axis=0)
+    img = preprocess_input(img)
+    return img

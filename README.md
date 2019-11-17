@@ -37,8 +37,27 @@ python3 feature_extraction.py
 ### 2. 对图片建立索引
 ```
 cd index_construction
-python3 create_knn_index.py
+python3 export_SPTAG_indexbuilder_input.py
 ```
+拷贝mm_index_input.txt到docker容器中
+```bash
+docker cp mm_index_input.txt 25042d741f07:/app/Release/
+```
+
+进入SPTAG的docker容器中，建立索引
+```bash
+docker attach 25042d741f07
+./indexbuilder -d 2622 -v Float  -i ./mm_index_input.txt -o data/mm_index -a BKT -t 2
+```
+
+启动SPTAG搜索服务
+```bash
+python3 SPTAG_rpc_search_service.py
+```
+
+### 3. 搜索测试
+对于mac用户，可以先安装``imgcat``，然后运行``index_construction/search_test.py``.
+![](search_test_result.jpg)
 
 ## 运行demo
 ### 运行演示网站
@@ -50,6 +69,7 @@ python3 main.py
 ### 测试效果
 打开[http://localhost:3889](http://localhost:3889)
 
+![demo_result](demo_result.png)
 ## Reference
 - https://sefiks.com/2018/08/06/deep-face-recognition-with-keras/
 

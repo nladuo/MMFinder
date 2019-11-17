@@ -16,7 +16,7 @@ class DataBean:
             raise Exception("the dtype of vec must be np.float32")
 
 
-class SPTAG_RpcClient:
+class SPTAG_RpcSearchClient:
 
     ALGO_BKT = "BKT"  # SPTAG-BKT is advantageous in search accuracy in very high-dimensional data
     ALGO_KDT = "KDT"  # SPTAG-KDT is advantageous in index building cost,
@@ -28,23 +28,10 @@ class SPTAG_RpcClient:
         c = rpyc.connect(host, port)
         self.proxy = c.root
 
-    def add_data(self, index_name, beans: [DataBean], algo=ALGO_BKT, dist=DIST_L2):
-        meta, vecs = self.__get_meta_and_vec_from_beans(beans)
-        vecs_ = vecs.tolist()
-        return self.proxy.add_data(index_name, vecs_, meta, algo, dist)
-
-    def delete_data(self, index_name, beans: [DataBean]):
+    def search(self, beans: [DataBean], p_resultNum):
         _, vecs = self.__get_meta_and_vec_from_beans(beans)
         vecs_ = vecs.tolist()
-        return self.proxy.delete_data(index_name, vecs_)
-
-    def search(self, index_name, beans: [DataBean], p_resultNum):
-        _, vecs = self.__get_meta_and_vec_from_beans(beans)
-        vecs_ = vecs.tolist()
-        return self.proxy.search(index_name, vecs_, p_resultNum)
-
-    def delete_index(self, index_name):
-        return self.proxy.delete_index(index_name)
+        return self.proxy.search(vecs_, p_resultNum)
 
     def __get_meta_and_vec_from_beans(self, beans: [DataBean]):
         if len(beans) == 0:
@@ -65,28 +52,8 @@ class SPTAG_RpcClient:
         return meta, vecs
 
 
-if __name__ == '__main__':
-    client = SPTAG_RpcClient("127.0.0.1", "8888")
-    beans = []
-    for i in range(5):
-        vec = i * np.ones((10,), dtype=np.float32)
-        beans.append(DataBean(_id=f"s{i}", vec=vec))
-
-    index_name = "test"
-    print("Adding Data:", client.add_data(index_name, beans))
-
-    print("*"*100)
+if __name__ == "__main__":
+    client = SPTAG_RpcSearchClient("127.0.0.1", "8888")
     print("Test Search")
     q = DataBean(_id=f"s{0}", vec=0 * np.ones((10,), dtype=np.float32))
-    print(client.search(index_name, [q], 3))
-
-    print("*"*100)
-    print("Test Delete:", client.delete_data(index_name, [q]))
-
-    print("*"*100)
-    print("Test Search After Deletion")
-    print(client.search(index_name, [q], 3))
-
-    print("*"*100)
-    print("Test Delete Index:", client.delete_index(index_name))
-
+    print(client.search([q], 3))

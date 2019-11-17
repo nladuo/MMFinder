@@ -10,15 +10,16 @@
         <div class="demo-shadow" style="padding: 5px;box-shadow: rgba(0, 0, 0, 0.12) 0px 2px 4px, rgba(0, 0, 0, 0.04) 0px 0px 6px;">
           <center>
             <div class="grid-content bg-purple">
-              <el-upload
-                class="avatar-uploader"
-                action="/api/upload_image"
-                name="file"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess">
-                <img v-if="image_to_search" :src="image_to_search" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
+                <el-upload
+                  class="avatar-uploader"
+                  action="/api/upload_image"
+                  name="file"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess">
+                  <img v-if="image_to_search" :src="image_to_search" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+                <img v-if="face_to_search" :src="face_to_search" class="face_to_search">
             </div>
           </center>
         </div>
@@ -48,11 +49,12 @@
             return {
                 image_to_search: '',
                 search_param: "",
-                result_imgs: []
+                result_imgs: [],
+                face_to_search: ""
             }
         },
         mounted() {
-            this.searchImage()
+            // this.searchImage()
         },
         methods: {
             handleAvatarSuccess(res, file)
@@ -64,10 +66,12 @@
                         type: 'success'
                     });
                     this.search_param = res.filename;
+                    this.face_to_search = "/api/get_upload_images/face-" + res.filename;
                     this.image_to_search = URL.createObjectURL(file.raw);
                 } else {
                     this.search_param = "";
                     this.image_to_search = "";
+                    this.face_to_search = "";
                     this.$message.error(res.msg);
                 }
             },
@@ -83,11 +87,15 @@
                 Api.get("/search", {
                     "filename": this.search_param
                 }, (data)=>{
-                    console.log(data);
-                    data.data.forEach((elem)=>{
-                        this.result_imgs.push("/api/get_images/" + elem)
-                    });
                     loading.close();
+                    console.log(data);
+                    if (data.success) {
+                        data.data.forEach((elem)=>{
+                            this.result_imgs.push("/api/get_images/" + elem)
+                        });
+                    } else {
+                        this.$message.error(data.msg);
+                    }
                 })
             }
         }
@@ -134,6 +142,11 @@
         width:100%;
     }
 
+    .face_to_search{
+        width: 40px;
+        height: 40px;
+    }
+
     .picC{
         width:90%;
         -webkit-column-count:5;
@@ -144,5 +157,6 @@
         -column-gap:10px;
         list-style:none;
     }
+
 
 </style>
