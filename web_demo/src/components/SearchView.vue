@@ -4,7 +4,6 @@
       <el-col :span="6">
         <div class="grid-content bg-purple">
           <center> <label style="line-height: 178px;">点击上传图片：</label></center>
-
         </div>
       </el-col>
       <el-col :span="12">
@@ -13,11 +12,11 @@
             <div class="grid-content bg-purple">
               <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                action="/api/upload_image"
+                name="file"
                 :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                :on-success="handleAvatarSuccess">
+                <img v-if="image_to_search" :src="image_to_search" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </div>
@@ -28,52 +27,71 @@
       <el-col :span="6">
         <div class="grid-content bg-purple" style="line-height: 178px">
           <center>
-            <el-button type="primary" icon="el-icon-search">搜索</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="searchImage">搜索</el-button>
           </center>
         </div>
       </el-col>
     </el-row>
 
     <ul class="picC">
-      <li><img v-for="url in urls" :src="url" alt="" /></li>
+      <li><img v-for="url in result_imgs" :src="url" alt="" /></li>
     </ul>
-    
+
   </div>
 </template>
 
 <script>
-export default {
-    name: 'SearchView',
-    data () {
-        return {
-            imageUrl: '',
-            url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-            urls: [
-                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-                'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-                'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-                'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-                'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-                'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-                'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-            ]
-        }
-    },
-    methods: {
-        handleAvatarSuccess(res, file)
-        {
-            this.imageUrl = URL.createObjectURL(file.raw);
+    import Api from "../actions/api"
+    export default {
+        name: 'SearchView',
+        data () {
+            return {
+                image_to_search: '',
+                search_param: "",
+                result_imgs: []
+            }
         },
-        beforeAvatarUpload(file) {
-            return true;
+        mounted() {
+            this.searchImage()
+        },
+        methods: {
+            handleAvatarSuccess(res, file)
+            {
+                console.log(res);
+                if (res.success){
+                    this.$message({
+                        message: '上传成功',
+                        type: 'success'
+                    });
+                    this.search_param = res.filename;
+                    this.image_to_search = URL.createObjectURL(file.raw);
+                } else {
+                    this.search_param = "";
+                    this.image_to_search = "";
+                    this.$message.error(res.msg);
+                }
+            },
+            searchImage() {
+                this.result_imgs = [];
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+
+                Api.get("/search", {
+                    "filename": this.search_param
+                }, (data)=>{
+                    console.log(data);
+                    data.data.forEach((elem)=>{
+                        this.result_imgs.push("/api/get_images/" + elem)
+                    });
+                    loading.close();
+                })
+            }
         }
     }
-}
 </script>
 
 <style scoped>
@@ -83,53 +101,48 @@ export default {
 
 </style>
 <style>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    /*width: 178px;*/
-    min-width: 70px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    min-width: 70px;
-    height: 178px;
-    display: block;
-  }
-  image{
-    width: auto;
-    height: 100%;
-  }
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+    .avatar {
+        width: auto;
+        min-width: 70px;
+        height: 178px;
+        display: block;
+    }
+    image{
+        width: auto;
+        height: 100%;
+    }
 
-  img{
-    width:100%;
-  }
+    img{
+        width:100%;
+    }
 
-
-  .picC{
-    width:90%;
-    -webkit-column-count:4;
-    -moz-column-count:4;
-    column-count:4;
-    -webkit-column-gap:10px;
-    -moz-column-gap:10px;
-    -column-gap:10px;
-    list-style:none;
-  }
-  /*.picC li{*/
-  /*  !*margin-top:20px;*!*/
-  /*  !*padding: 10px;*!*/
-  /*}*/
+    .picC{
+        width:90%;
+        -webkit-column-count:5;
+        -moz-column-count:5;
+        column-count:5;
+        -webkit-column-gap:10px;
+        -moz-column-gap:10px;
+        -column-gap:10px;
+        list-style:none;
+    }
 
 </style>

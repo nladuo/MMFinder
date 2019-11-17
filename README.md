@@ -25,7 +25,7 @@ Google Drive：https://drive.google.com/file/d/1CPSeum3HpopfomUEK1gybeuIVoeJT_Eo
 ### 2. 使用VGG提取特征并构建数据集
 ```bash
 cd data_prprocess
-python feature_extraction.py
+python3 feature_extraction.py
 ```
 
 
@@ -35,14 +35,20 @@ python feature_extraction.py
 
 
 ### 2. 对图片建立索引
-
+```
+cd index_construction
+python3 create_knn_index.py
+```
 
 ## 运行demo
 ### 运行演示网站
+```
+cd web_demo
+python3 main.py
+```
 
-
-### 查看结果
-
+### 测试效果
+打开[http://localhost:3889](http://localhost:3889)
 
 ## Reference
 - https://sefiks.com/2018/08/06/deep-face-recognition-with-keras/
