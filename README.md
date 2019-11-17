@@ -57,6 +57,8 @@ python3 SPTAG_rpc_search_service.py
 
 ### 3. 搜索测试
 对于mac用户，可以先安装``imgcat``，然后运行``index_construction/search_test.py``.
+
+效果如下：
 ![](search_test_result.jpg)
 
 ## 运行demo
@@ -69,6 +71,7 @@ python3 main.py
 ### 测试效果
 打开[http://localhost:3889](http://localhost:3889)
 
+上传一张图片测试，效果如下：
 ![demo_result](demo_result.png)
 ## Reference
 - https://sefiks.com/2018/08/06/deep-face-recognition-with-keras/
