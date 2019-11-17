@@ -26,6 +26,7 @@ class SPTAG_RpcSearchClient:
 
     def __init__(self, host, port):
         c = rpyc.connect(host, port)
+        c._config['sync_request_timeout'] = None
         self.proxy = c.root
 
     def search(self, beans: [DataBean], p_resultNum):
