@@ -17,7 +17,6 @@ export default {
                 _emit(null);
             }
         });
-
     },
 
     post(url, data, _emit) {
@@ -36,6 +35,5 @@ export default {
                 _emit(null);
             }
         });
-
     }
 }

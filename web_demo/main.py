@@ -1,7 +1,7 @@
 from flask import Flask, send_from_directory, request
 import json
-from web_utils import allowed_file, save_upload_file, re_arrange_images
-from web_service import get_face_and_save, get_face_representation, call_SPTAG_search, UPLOAD_DIR
+from backend.web_utils import allowed_file, save_upload_file, re_arrange_images
+from backend.web_service import get_face_and_save, get_face_representation, call_SPTAG_search, UPLOAD_DIR
 import os
 
 
@@ -71,30 +71,6 @@ def api_search_image():
         "success": True,
         "data": re_arrange_images(image_names)
     })
-
-
-# @app.route('/api/search')
-# def test_api_search_image():
-#     import random
-#     import pymongo
-#     client = pymongo.MongoClient()
-#     db = client.MMFinder
-#     images_coll = db.images
-#
-#     image_names = []
-#
-#     for i, image in enumerate(images_coll.find()):
-#         path = image["path"]
-#
-#         image_names.append(path)
-#         if i > 200:
-#             break
-#
-#     random.shuffle(image_names)
-#     return json.dumps({
-#         "success": True,
-#         "data": image_names[:30]
-#     })
 
 
 if __name__ == '__main__':

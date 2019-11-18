@@ -9,9 +9,7 @@
                active-text-color="#ffd04b">
         <el-menu-item index="1">MMFinder Web Demo</el-menu-item>
       </el-menu>
-
     </el-header>
-
     <SearchView/>
   </div>
 </template>

@@ -23,7 +23,6 @@
             </div>
           </center>
         </div>
-
       </el-col>
       <el-col :span="6">
         <div class="grid-content bg-purple" style="line-height: 178px">
@@ -34,7 +33,7 @@
       </el-col>
     </el-row>
 
-    <ul class="picC">
+    <ul class="result_pic_list">
       <li><img v-for="url in result_imgs" :src="url" alt="" /></li>
     </ul>
 
@@ -103,60 +102,58 @@
 </script>
 
 <style scoped>
-  .search{
-    margin: 20px;
-  }
+.search{
+  margin: 20px;
+}
 
 </style>
 <style>
-    .avatar-uploader .el-upload {
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-    .avatar-uploader .el-upload:hover {
-        border-color: #409EFF;
-    }
-    .avatar-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        width: 178px;
-        height: 178px;
-        line-height: 178px;
-        text-align: center;
-    }
-    .avatar {
-        width: auto;
-        min-width: 70px;
-        height: 178px;
-        display: block;
-    }
-    image{
-        width: auto;
-        height: 100%;
-    }
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: auto;
+  min-width: 70px;
+  height: 178px;
+  display: block;
+}
+image{
+  width: auto;
+  height: 100%;
+}
 
-    img{
-        width:100%;
-    }
+img{
+  width:100%;
+}
 
-    .face_to_search{
-        width: 40px;
-        height: 40px;
-    }
+.face_to_search{
+  width: 40px;
+  height: 40px;
+}
 
-    .picC{
-        width:90%;
-        -webkit-column-count:5;
-        -moz-column-count:5;
-        column-count:5;
-        -webkit-column-gap:10px;
-        -moz-column-gap:10px;
-        -column-gap:10px;
-        list-style:none;
-    }
-
-
+.result_pic_list{
+  width:90%;
+  -webkit-column-count:5;
+  -moz-column-count:5;
+  column-count:5;
+  -webkit-column-gap:10px;
+  -moz-column-gap:10px;
+  -column-gap:10px;
+  list-style:none;
+}
 </style>

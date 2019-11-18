@@ -1,8 +1,8 @@
-from vgg_model import get_feature_extractor
-from web_utils import preprocess_image
+from .vgg_model import get_feature_extractor
+from .web_utils import preprocess_image
 import face_recognition
 from PIL import Image
-from SPTAG_rpc_search_client import SPTAG_RpcSearchClient, DataBean
+from .SPTAG_rpc_search_client import SPTAG_RpcSearchClient, DataBean
 import numpy as np
 
 vgg_feature_extractor = get_feature_extractor()
