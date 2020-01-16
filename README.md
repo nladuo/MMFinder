@@ -1,7 +1,7 @@
 # MMFinder
 一个美女图搜索应用的demo。
 
-> 另外新增了ElasticSearch版本，配置简单，见[elasticsearch分支](https://github.com/nladuo/MMFinder/tree/elasticsearch)
+> 新增了ElasticSearch版本，配置简单，详细说明请查看：[elasticsearch分支](https://github.com/nladuo/MMFinder/tree/elasticsearch)。
 
 ## 环境
 python3.7 + mongodb + SPTAG
