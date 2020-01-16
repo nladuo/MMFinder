@@ -1,7 +1,7 @@
 from flask import Flask, send_from_directory, request
 import json
 from backend.web_utils import allowed_file, save_upload_file, re_arrange_images
-from backend.web_service import get_face_and_save, get_face_representation, call_SPTAG_search, UPLOAD_DIR
+from backend.web_service import get_face_and_save, get_face_representation, call_ES_search, UPLOAD_DIR
 import os
 
 
@@ -65,7 +65,7 @@ def api_search_image():
         })
 
     vec = get_face_representation(filename)
-    image_names = call_SPTAG_search(vec)
+    image_names = call_ES_search(vec)
 
     return json.dumps({
         "success": True,

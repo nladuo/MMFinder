@@ -2,7 +2,7 @@ from .vgg_model import get_feature_extractor
 from .web_utils import preprocess_image
 import face_recognition
 from PIL import Image
-from .SPTAG_rpc_search_client import SPTAG_RpcSearchClient, DataBean
+from elasticsearch import Elasticsearch
 import numpy as np
 
 vgg_feature_extractor = get_feature_extractor()
@@ -33,14 +33,25 @@ def get_face_representation(filename):
     return vec
 
 
-def call_SPTAG_search(vec):
-    vec = np.array(vec, dtype=np.float32)
-    search_client = SPTAG_RpcSearchClient("127.0.0.1", "8888")
-    bean = DataBean(_id="", vec=vec)
-    results = search_client.search([bean], 30)
-    result_images = []
-    for item in results[0]:
-        k = [i for i in item.keys()][0]
-        print(k, item[k])
-        result_images.append(k)
-    return result_images
+def call_ES_search(vec):
+    script_query = {
+        "script_score": {
+            "query": {"match_all": {}},
+            "script": {
+                "source": "cosineSimilarity(params.query_vector, doc['vec']) + 1.0",
+                "params": {"query_vector": vec}
+            }
+        }
+    }
+    es = Elasticsearch()
+    searched = es.search("mm_index", body={
+        "size": 30,
+        "query": script_query,
+    }, timeout=None)
+
+    results = []
+    for hit in searched["hits"]["hits"]:
+        print(hit["_id"], hit["_score"])
+        results.append(hit['_id'])
+
+    return results

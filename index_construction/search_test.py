@@ -1,9 +1,11 @@
-from SPTAG_rpc_search_client import SPTAG_RpcSearchClient, DataBean
+# from SPTAG_rpc_search_client import SPTAG_RpcSearchClient, DataBean
 import pymongo
 import os
 import random
 from vgg_model import get_feature_extractor, preprocess_image
 import numpy as np
+from elasticsearch import Elasticsearch
+
 
 image_names = []
 for i, path in enumerate(os.listdir("../mm_images")):
@@ -12,11 +14,9 @@ for i, path in enumerate(os.listdir("../mm_images")):
     if i > 100:
         break
 
-random.shuffle(image_names)
-test_img = image_names[0]
+# random.shuffle(image_names)
+test_img = image_names[49]
 test_face_path = f"../mm_images/faces/face-{test_img}"
-
-search_client = SPTAG_RpcSearchClient("127.0.0.1", "8888")
 
 
 client = pymongo.MongoClient()
@@ -33,11 +33,23 @@ def get_face_representation(path):
     return vec
 
 
-vec = np.array(get_face_representation(test_face_path), dtype=np.float32)
-bean = DataBean(_id="", vec=vec)
-os.system(f"imgcat {test_face_path}")
-results = search_client.search([bean], 20)
-for item in results[0]:
-    k = [i for i in item.keys()][0]
-    print(k, item[k])
-    os.system(f"imgcat ../mm_images/faces/face-{k}")
+query_vector = get_face_representation(test_face_path)
+
+script_query = {
+    "script_score": {
+        "query": {"match_all": {}},
+        "script": {
+            "source": "cosineSimilarity(params.query_vector, doc['vec']) + 1.0",
+            "params": {"query_vector": query_vector}
+        }
+    }
+}
+es = Elasticsearch()
+searched = es.search("mm_index", body={
+    "size": 20,
+    "query": script_query,
+}, timeout=None)
+
+for hit in searched["hits"]["hits"]:
+    print(hit["_id"], hit["_score"])
+    os.system(f"imgcat ../mm_images/faces/face-{hit['_id']}")

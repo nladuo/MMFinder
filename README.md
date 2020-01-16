@@ -2,7 +2,7 @@
 一个美女图搜索应用的demo。
 
 ## 环境
-python3.7 + mongodb + SPTAG
+python3.7 + mongodb + ElasticSearch7.5.1修改版。
 
 ## 数据准备
 ### 1. 准备数据
@@ -28,31 +28,14 @@ cd data_prprocess
 python3 feature_extraction.py
 ```
 
-
 ## 建立索引
-### 1. 安装SPTAG，并启动Rpc服务
-见：[Docker下SPTAG的安装与测试](https://www.jianshu.com/p/fcedf00eac32)
-
+### 1. 编译安装ElasticSearch7.5.1
+需要将ES的dense vector的维度改为大于2622的值，可以下载我编译好的。链接：https://pan.baidu.com/s/1KCTSuCL5hXtvHGSSN3hMxQ 提取码：4l0i
 
 ### 2. 对图片建立索引
 ```
 cd index_construction
-python3 export_SPTAG_indexbuilder_input.py
-```
-拷贝mm_index_input.txt到docker容器中
-```bash
-docker cp mm_index_input.txt 25042d741f07:/app/Release/
-```
-
-进入SPTAG的docker容器中，建立索引
-```bash
-docker attach 25042d741f07
-./indexbuilder -d 2622 -v Float  -i ./mm_index_input.txt -o data/mm_index -a BKT -t 2
-```
-
-启动SPTAG搜索服务
-```bash
-python3 SPTAG_rpc_search_service.py
+python3 create_es_index.py
 ```
 
 ### 3. 搜索测试
