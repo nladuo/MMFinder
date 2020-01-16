@@ -30,8 +30,11 @@ python3 feature_extraction.py
 
 ## 建立索引
 ### 1. 编译安装ElasticSearch7.5.1
-需要将ES的dense vector的维度改为大于2622的值，可以下载我编译好的。链接：https://pan.baidu.com/s/1KCTSuCL5hXtvHGSSN3hMxQ 提取码：4l0i
+需要将ES的dense vector的维度改为大于2622的值，可以下载我编译好的。
 
+链接：https://pan.baidu.com/s/1KCTSuCL5hXtvHGSSN3hMxQ 提取码：4l0i
+
+下载后，进入ElasticSearch7的bin目录下输入`./elasticsearch`启动索引服务器。
 ### 2. 对图片建立索引
 ```
 cd index_construction
