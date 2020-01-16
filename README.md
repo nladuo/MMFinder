@@ -1,6 +1,8 @@
 # MMFinder
 一个美女图搜索应用的demo。
 
+> 另外新增了ElasticSearch版本，配置简单，见[elasticsearch分支](https://github.com/nladuo/MMFinder/tree/elasticsearch)
+
 ## 环境
 python3.7 + mongodb + SPTAG
 
@@ -27,7 +29,6 @@ Google Drive：https://drive.google.com/file/d/1CPSeum3HpopfomUEK1gybeuIVoeJT_Eo
 cd data_prprocess
 python3 feature_extraction.py
 ```
-
 
 ## 建立索引
 ### 1. 安装SPTAG，并启动Rpc服务
