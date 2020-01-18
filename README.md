@@ -4,7 +4,7 @@
 > 新增了ElasticSearch版本，配置简单，详细说明请查看：[elasticsearch分支](https://github.com/nladuo/MMFinder/tree/elasticsearch)。
 
 ## 环境
-python3 + mongodb + SPTAG
+python3.6以上 + mongodb + SPTAG
 
 
 ## 安装依赖
