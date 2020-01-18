@@ -4,7 +4,29 @@
 > 新增了ElasticSearch版本，配置简单，详细说明请查看：[elasticsearch分支](https://github.com/nladuo/MMFinder/tree/elasticsearch)。
 
 ## 环境
-python3.7 + mongodb + SPTAG
+python3 + mongodb + SPTAG
+
+
+## 安装依赖
+### 安装Dlib
+#### Mac or Linux
+需要先安装好Cmake再通过pip安装即可。
+```
+pip3 install dlib
+```
+
+#### 对于Windows
+对于python3.6可以通过whl快速安装。
+```
+pip install https://pypi.python.org/packages/da/06/bd3e241c4eb0a662914b3b4875fc52dd176a9db0d4a2c915ac2ad8800e9e/dlib-19.7.0-cp36-cp36m-win_amd64.whl#md5=b7330a5b2d46420343fbed5df69e6a3f
+```
+其他版本可以参考网上教程。
+
+### 安装Python依赖
+```
+cd MMFinder
+pip3 install -r requirements.txt
+```
 
 ## 数据准备
 ### 1. 准备数据
