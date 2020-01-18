@@ -2,6 +2,6 @@ flask
 pillow
 pymongo
 scikit-learn
-Tensorflow==1.14.0
+Tensorflow==1.15
 Keras
 face_recognition
