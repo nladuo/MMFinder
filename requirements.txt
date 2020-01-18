@@ -2,7 +2,7 @@ flask
 pillow
 pymongo
 scikit-learn
-Tensorflow
+Tensorflow==1.15
 Keras
 face_recognition
 elasticsearch==7.1.0

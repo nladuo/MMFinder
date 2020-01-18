@@ -4,10 +4,14 @@ import face_recognition
 from PIL import Image
 from elasticsearch import Elasticsearch
 import numpy as np
+import tensorflow as tf
 
-vgg_feature_extractor = get_feature_extractor()
-vgg_feature_extractor.predict(np.zeros((1, 224, 224, 3)))
-
+graph = tf.Graph()
+with graph.as_default():
+    session = tf.Session()
+    with session.as_default():
+        vgg_feature_extractor = get_feature_extractor()
+        vgg_feature_extractor.predict(np.zeros((1, 224, 224, 3)))
 IMAGES_PATH = "../mm_images"
 UPLOAD_DIR = './dist/static/upload_images'
 
@@ -28,7 +32,9 @@ def get_face_and_save(filename):
 def get_face_representation(filename):
     face_img_path = f"{UPLOAD_DIR}/face-{filename}"
     img = preprocess_image(face_img_path)
-    features = vgg_feature_extractor.predict(img)
+    with graph.as_default():
+        with session.as_default():
+            features = vgg_feature_extractor.predict(img)
     vec = features[0].tolist()
     return vec
 
